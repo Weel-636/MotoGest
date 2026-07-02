@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Gestión de Venta de Motos</title>
+
+    <link rel="stylesheet"
+          href="css/estilos.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ===========================
+            MENÚ
+    ============================ -->
+
+    <aside class="menu">
+
+        <div class="logo">
+
+            🏍 MOTOS
+
+        </div>
+
+        <a href="#" onclick="mostrarDashboard()">
+
+            🏠 Dashboard
+
+        </a>
+
+        <a href="#" onclick="mostrarClientes()">
+
+            👤 Clientes
+
+        </a>
+
+        <a href="#" onclick="mostrarPagos()">
+
+            💳 Pagos
+
+        </a>
+
+        <a href="#" onclick="abrirReportes()">
+
+            📊 Reportes
+
+        </a>
+
+    </aside>
+
+
+    <!-- ===========================
+            CONTENIDO
+    ============================ -->
+
+    <main class="contenido">
+
+
+        <!-- ===========================
+                DASHBOARD
+        ============================ -->
+
+        <div id="dashboardSection">
+
+            <h1 class="titulo">
+
+                Sistema de Gestión de Venta de Motos
+
+            </h1>
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <h2>Clientes</h2>
+
+                    <p id="totalClientes">0</p>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Contado</h2>
+
+                    <p id="totalContado">0</p>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Crédito</h2>
+
+                    <p id="totalCredito">0</p>
+
+                </div>
+
+                <div class="card">
+
+                    <h2>Saldo Pendiente</h2>
+
+                    <p id="saldoPendiente">
+
+                        Bs. 0
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <h2 style="margin-bottom:15px;">
+
+                Últimos Clientes Registrados
+
+            </h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Nombre</th>
+
+                        <th>Moto</th>
+
+                        <th>Estado</th>
+
+                        <th>Saldo</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablaDashboard">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ===========================
+                CLIENTES
+        ============================ -->
+
+        <div id="clientesSection" style="display:none;">
+
+            <button
+                class="boton"
+                onclick="abrirModal()">
+
+                ➕ Registrar Cliente
+
+            </button>
+
+            <select
+                id="filtroClientes"
+                onchange="filtrarClientes()">
+
+                <option value="Todos">Todos</option>
+
+                <option value="Contado">Contado</option>
+
+                <option value="Crédito">Crédito</option>
+
+                <option value="Al día">Al día</option>
+
+                <option value="Atrasados">Atrasados</option>
+
+                <option value="Pagados">Pagados</option>
+
+            </select>
+
+            <input
+
+                type="text"
+
+                id="buscar"
+
+                placeholder="Buscar cliente..."
+
+                onkeyup="buscarCliente()"
+
+            >
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Nombre</th>
+
+                        <th>Carnet</th>
+
+                        <th>Moto</th>
+
+                        <th>Tipo</th>
+
+                        <th>Modalidad</th>
+
+                        <th>Próximo Pago</th>
+
+                        <th>Saldo</th>
+
+                        <th>Estado</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablaClientes">
+
+                </tbody>
+
+            </table>
+
+        </div>
+                <!-- ===========================
+                PAGOS
+        ============================ -->
+
+        <div id="pagosSection" style="display:none;">
+
+            <h1 class="titulo">
+
+                Historial de Pagos
+
+            </h1>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Cliente</th>
+
+                        <th>Fecha</th>
+
+                        <th>Monto</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablaPagos">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+<!-- ============================================
+                MODAL CLIENTE
+============================================= -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-contenido">
+
+        <h2>Registrar Cliente</h2>
+
+        <input
+            type="text"
+            id="nombre"
+            placeholder="Nombre">
+
+        <input
+            type="text"
+            id="carnet"
+            placeholder="Carnet">
+
+        <input
+            type="text"
+            id="moto"
+            placeholder="Motocicleta">
+
+        <select id="tipo">
+
+            <option>Contado</option>
+
+            <option>Crédito</option>
+
+        </select>
+
+        <input
+            type="number"
+            id="total"
+            placeholder="Monto total">
+
+        <input
+            type="number"
+            id="inicial"
+            placeholder="Pago inicial">
+
+        <select id="modalidad">
+
+            <option>Diario</option>
+
+            <option>Semanal</option>
+
+            <option>Mensual</option>
+
+        </select>
+
+        <div class="botones">
+
+            <button
+                class="cancelar"
+                onclick="cerrarModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                class="guardar"
+                onclick="guardarCliente()">
+
+                Guardar Cliente
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ============================================
+                MODAL PAGO
+============================================= -->
+
+<div class="modal" id="modalPago">
+
+    <div class="modal-contenido">
+
+        <h2>Registrar Pago</h2>
+
+        <p>
+
+            Cliente:
+
+            <strong id="nombrePago"></strong>
+
+        </p>
+
+        <p>
+
+            Saldo Actual:
+
+            <strong id="saldoActual">
+
+                Bs.0
+
+            </strong>
+
+        </p>
+
+        <input
+            type="number"
+            id="montoPago"
+            placeholder="Monto">
+
+        <div class="botones">
+
+            <button
+                class="cancelar"
+                onclick="cerrarPago()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                class="guardar"
+                onclick="guardarPago()">
+
+                Guardar Pago
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ============================================
+            MODAL HISTORIAL
+============================================= -->
+
+<div class="modal" id="modalHistorial">
+
+    <div
+        class="modal-contenido"
+        style="width:750px">
+
+        <h2 id="tituloHistorial">
+
+            Historial de Pagos
+
+        </h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Fecha</th>
+
+                    <th>Monto</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tablaHistorial">
+
+            </tbody>
+
+        </table>
+
+        <br>
+
+        <h3>
+
+            Total Pagado:
+
+            <span id="totalPagado">
+
+                Bs.0
+
+            </span>
+
+        </h3>
+
+        <br>
+
+        <div class="botones">
+
+            <button
+                class="cancelar"
+                onclick="cerrarHistorial()">
+
+                Cerrar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ============================================
+            MODAL REPORTES
+============================================= -->
+
+<div class="modal" id="modalReportes">
+
+    <div
+        class="modal-contenido"
+        style="width:800px">
+
+        <h2>
+
+            Reportes
+
+        </h2>
+
+        <div id="contenidoReportes">
+
+            <h3>
+
+                Clientes Registrados:
+
+                <span id="rClientes">
+
+                    0
+
+                </span>
+
+            </h3>
+
+            <h3>
+
+                Ventas Contado:
+
+                <span id="rContado">
+
+                    0
+
+                </span>
+
+            </h3>
+
+            <h3>
+
+                Ventas Crédito:
+
+                <span id="rCredito">
+
+                    0
+
+                </span>
+
+            </h3>
+
+            <h3>
+
+                Cobrado:
+
+                <span id="rCobrado">
+
+                    Bs.0
+
+                </span>
+
+            </h3>
+
+            <h3>
+
+                Pendiente:
+
+                <span id="rPendiente">
+
+                    Bs.0
+
+                </span>
+
+            </h3>
+
+        </div>
+
+        <br>
+
+        <div class="botones">
+
+            <button
+                class="guardar"
+                onclick="exportarPDF()">
+
+                📄 PDF
+
+            </button>
+
+            <button
+                class="guardar"
+                onclick="exportarExcel()">
+
+                📊 Excel
+
+            </button>
+
+            <button
+                class="cancelar"
+                onclick="cerrarReportes()">
+
+                Cerrar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ============================================
+                SCRIPTS
+============================================= -->
+
+<script src="js/api.js"></script>
+
+<script src="js/clientes.js"></script>
+
+<script src="js/pagos.js"></script>
+
+<script src="js/dashboard.js"></script>
+
+<script src="js/reportes.js"></script>
+
+</body>
+
+</html>
